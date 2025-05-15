@@ -11,11 +11,13 @@ ANCHO = 800
 ALTO = 600
 LIMITE_IZQUIERDO = 240
 LIMITE_DERECHO = 550
-
+puntos  = ("Puntos:")
+numero_puntos = 0  
+autos_rebasados = 0
 # Carriles dentro de los límites
-carril1 = 270
+carril1 = 240
 carril2 = 360
-carril3 = 450
+carril3 = 520
 
 pygame.init()
 
@@ -41,12 +43,12 @@ class Jugador(pygame.sprite.Sprite):
 
     def mover(self, keys):
         if keys[pygame.K_LEFT] and self.rect.left > LIMITE_IZQUIERDO:
-            self.rect.x -= 15
+            self.rect.x -= 10
         if keys[pygame.K_RIGHT] and self.rect.right < LIMITE_DERECHO:
-            self.rect.x += 15
+            self.rect.x += 10
 
     def reiniciar(self):
-        self.rect.center = (ANCHO // 2, ALTO - 50)
+        self.rect.center = (ANCHO // 2, ALTO - 110)
 
 jugador = Jugador()
 
@@ -67,6 +69,7 @@ class Trafico(pygame.sprite.Sprite):
             self.rect.x = random.choice([carril1, carril2, carril3])
             self.rect.y = random.randint(-600, -100)
             self.velocidad = 4
+            
 
 # Funciones para botones
 def dibujar_boton(texto, x, y, color):
@@ -85,7 +88,7 @@ def dibujar_boton2(texto, x, y, color):
 
 # Pantallas de carga
 def pantallas_carga_inicial():
-    mensajes = ["Cargando...", "Iniciando juego :)", "Listo"]
+    mensajes = ["Cargando...", "Iniciando juego...", "Listo"]
     for mensaje in mensajes:
         ventana.fill(NEGRO)
         texto = font.render(mensaje, True, (100, 255, 255))
@@ -101,24 +104,34 @@ def inicio_juego():
         boton_jugar = dibujar_boton("Iniciar", 300, 200, ROJO)
         boton_salir = dibujar_boton("Salir", 300, 300, VERDE)
 
-        for evento in pygame.event.get():
-            if evento.type == pygame.QUIT:
+
+        
+        # eventos
+        
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
-            if evento.type == pygame.MOUSEBUTTONDOWN:
-                if boton_jugar.collidepoint(evento.pos):
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if boton_jugar.collidepoint(event.pos):
                     return "jugar"
-                if boton_salir.collidepoint(evento.pos):
+                if boton_salir.collidepoint(event.pos):
                     pygame.quit()
                     sys.exit()
-
+        
         pygame.display.flip()
 
 # Juego principal
 def iniciar_juego():
+   
+    global numero_puntos
+    numero_puntos =0
+    global autos_rebasados
+    autos_rebasados = 0
     corriendo = True
     reloj = pygame.time.Clock()
 
+    
     # Crear grupo de tráfico
     trafico_group = pygame.sprite.Group()
     for _ in range(5):
@@ -126,11 +139,21 @@ def iniciar_juego():
 
     while corriendo:
         ventana.blit(carretera, (0, 0))
+        texto = font.render(puntos,True,(0,0,0)) 
+        rect = texto.get_rect(topleft=(500,0)) 
+        ventana.blit(texto, rect)
+        
+        texto3 = font.render(str(autos_rebasados),True,(0,0,0)) 
+        rect3 = texto3.get_rect(topleft=(650,0))
+
+        numero_puntos +=1 
+        
+        ventana.blit(texto3, rect3)
 
         # Botones del juego
         boton_menu = dibujar_boton2("Menu", 0, 0, ROJO)
         boton_salir = dibujar_boton2("Salir", 0, 50, ROJO)
-
+         
         for evento in pygame.event.get():
             if evento.type == pygame.QUIT:
                 pygame.quit()
@@ -140,14 +163,21 @@ def iniciar_juego():
                     return "menu"
                 if boton_salir.collidepoint(evento.pos):
                     pygame.quit()
-                    sys.exit()
+        
+
+        
 
         # Movimiento jugador
         keys = pygame.key.get_pressed()
         jugador.mover(keys)
 
         # Actualizar tráfico
-        trafico_group.update()
+        for auto in trafico_group:
+            auto.rect.y += auto.velocidad
+            if auto.rect.top > ALTO:
+                auto.rect.x = random.choice([carril1, carril2, carril3])
+                auto.rect.y = random.randint(-600, -100)
+                autos_rebasados += 1
 
         # Dibujar tráfico y jugador
         trafico_group.draw(ventana)
@@ -155,16 +185,8 @@ def iniciar_juego():
 
         # Colisiones
         if pygame.sprite.spritecollide(jugador, trafico_group, False):
-            print("¡Colisión!")
+            return boton_menu
             
-            texto = font.render("perdiste", True, (100, 255, 255))
-            rect = texto.get_rect(center=(ANCHO // 2, ALTO // 2))
-            ventana.blit(texto,rect)
-            pygame.time.delay(1000)
-            pygame.display.flip()
-            pygame.quit()
-            sys.exit()
-
         pygame.display.flip()
         reloj.tick(60)
 
