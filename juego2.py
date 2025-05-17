@@ -51,14 +51,14 @@ class AutoEnemigo(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.x = random.randint(LIMITE_IZQUIERDO, LIMITE_DERECHO - 60)
         self.rect.y = random.randint(-600, -100)
-        self.velocidad = random.randint(4, 7)  # Velocidad moderada
+        self.velocidad = 4  # Velocidad moderada
 
     def update(self):
         self.rect.y += self.velocidad
         if self.rect.top > ALTO:
             self.rect.x = random.randint(LIMITE_IZQUIERDO, LIMITE_DERECHO - 60)
             self.rect.y = random.randint(-600, -100)
-            self.velocidad = random.randint(4, 7)
+            self.velocidad = 4
 
 # Crear jugador
 jugador = Jugador()
