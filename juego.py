@@ -93,8 +93,8 @@ def pantallas_carga_inicial():
 def inicio_juego():
     while True:
         ventana.blit(fondo, (0, 0))
-        boton_jugar = dibujar_boton("Iniciar", 300, 200, ROJO)
-        boton_salir = dibujar_boton("Salir", 300, 300, VERDE)        
+        boton_jugar = dibujar_boton("Iniciar", 30, 200, ROJO)
+        boton_salir = dibujar_boton("Salir", 30, 300, VERDE)        
         # eventos       
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -112,6 +112,13 @@ def reiniciar():
     autos_rebasados = 0
     velocidad_trafico = 6
     nivel_actual = 0
+def pantalla_nivel(nivel_numero):
+    ventana.fill(NEGRO)
+    texto = font.render(f"Nivel {nivel_numero}", True, (255, 255, 255))
+    rect = texto.get_rect(center=(ANCHO // 2, ALTO // 2))
+    ventana.blit(texto, rect)
+    pygame.display.flip()
+    time.sleep(2) 
 # Juego principal
 def iniciar_juego():
     global nivel_actual, velocidad_trafico, autos_rebasados 
@@ -161,10 +168,13 @@ def iniciar_juego():
                     nuevo_auto.rect.y = random.randint(-1000,-200)
                 trafico_group.add(nuevo_auto)      
         
-        if autos_rebasados >= 100:         
+        if autos_rebasados >= 10 and nivel_actual == 0:
+            pantalla_nivel(2)      
             velocidad_trafico =8  
             nivel_actual = 1
-            
+            autos_rebasados = 0
+            auto.kill()
+            jugador.reiniciar()
             
         # Dibujar tráfico y jugador
         trafico_group.draw(ventana)
