@@ -3,7 +3,7 @@ import sys
 import time
 import random
 
-# Variables
+# Colores y constantes
 ROJO = (255, 0, 0) 
 VERDE = (0, 255, 0)
 NEGRO = (7, 7, 7)
@@ -16,11 +16,12 @@ autos_rebasados = 0
 carril1 = 230
 carril2 = 360
 carril3 = 485
+velocidad_trafico = 8  # Inicial
 
 pygame.init()
 pygame.mixer.init()
 
-# Dimensiones de pantalla.
+# Dimensiones de pantalla
 ventana = pygame.display.set_mode((ANCHO, ALTO))
 pygame.display.set_caption("Highway Rush")
 font = pygame.font.SysFont(None, 60)
@@ -30,13 +31,13 @@ font2 = pygame.font.SysFont(None, 25)
 carro1 = pygame.image.load("img/carro1.1.png").convert_alpha()
 carrito = pygame.image.load("img/carrito.png").convert()
 carretera = pygame.image.load("img/carretera.png").convert()
-carretera2 =pygame.image.load("img/carretera2.png").convert()
-carretera3= pygame.image.load("img/carretera3.png").convert()
+carretera2 = pygame.image.load("img/carretera2.png").convert()
+carretera3 = pygame.image.load("img/carretera3.png").convert()
 carros2 = pygame.image.load("img/carro2.1.png").convert_alpha()
 carros3 = pygame.image.load("img/carro3.1.png").convert_alpha()
 
 sonido_paso = pygame.mixer.Sound("img/carross.mp3")
-niveles = [carretera,carretera2,carretera3]
+niveles = [carretera, carretera2, carretera3]
 nivel_actual = 0
 
 # Clase Jugador
@@ -74,7 +75,7 @@ class Trafico(pygame.sprite.Sprite):
             self.rect.y = random.randint(-200, -100)
             self.velocidad = velocidad_trafico
 
-# Botones menú
+# Botones
 def dibujar_boton(texto, x, y, color):
     rect = pygame.Rect(x, y, 200, 60)
     pygame.draw.rect(ventana, color, rect)
@@ -89,7 +90,7 @@ def dibujar_boton2(texto, x, y, color):
     ventana.blit(texto_render2, (x + 2, y + 2))
     return rect2
 
-# Pantallas de carga
+# Pantallas
 def pantallas_carga_inicial():
     mensajes = ["Cargando...", "Iniciando juego..."]
     for mensaje in mensajes:
@@ -100,13 +101,14 @@ def pantallas_carga_inicial():
         pygame.display.flip()
         time.sleep(2)
 
-# Pantalla de inicio
 def inicio_juego():
     while True:
         ventana.fill(NEGRO)
         boton_jugar = dibujar_boton("Iniciar", 30, 200, ROJO)
-        boton_salir = dibujar_boton("Salir", 30, 300, VERDE)        
-        # eventos       
+        boton_salir = dibujar_boton("Salir", 30, 300, VERDE) 
+        texto = font.render("integrantes:", True, (255, 255, 255)) 
+        rect3 = texto.get_rect(topleft=(255, 255))
+        ventana.blit(texto, rect3)
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
@@ -119,12 +121,6 @@ def inicio_juego():
                     sys.exit()
         pygame.display.flip()
 
-def reiniciar():
-    global autos_rebasados, velocidad_trafico, nivel_actual
-    autos_rebasados = 0
-    velocidad_trafico = 8
-    nivel_actual = 0
-
 def pantalla_nivel(nivel_numero):
     ventana.fill(NEGRO)
     texto = font.render(f"Nivel {nivel_numero}", True, (255, 255, 255))
@@ -133,13 +129,38 @@ def pantalla_nivel(nivel_numero):
     pygame.display.flip()
     time.sleep(2)
 
+def pantalla_victoria():
+    ventana.fill(NEGRO)
+    texto = font.render("¡Ganaste!", True, (0, 255, 0))
+    rect = texto.get_rect(center=(ANCHO // 2, ALTO // 2 - 50))
+    ventana.blit(texto, rect)
+
+    texto2 = font.render("Haz clic para volver al menú", True, (255, 255, 255))
+    rect2 = texto2.get_rect(center=(ANCHO // 2, ALTO // 2 + 20))
+    ventana.blit(texto2, rect2)
+    pygame.display.flip()
+
+    esperando = True
+    while esperando:
+        for evento in pygame.event.get():
+            if evento.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+            if evento.type == pygame.MOUSEBUTTONDOWN:
+                esperando = False
+
+def reiniciar():
+    global autos_rebasados, velocidad_trafico, nivel_actual
+    autos_rebasados = 0
+    velocidad_trafico = 8
+    nivel_actual = 0
+
 # Juego principal
 def iniciar_juego():
     global nivel_actual, velocidad_trafico, autos_rebasados 
     corriendo = True
     cantidad = 2
     reloj = pygame.time.Clock()   
-    # Crear grupo de tráfico
     trafico_group = pygame.sprite.Group()
 
     for _ in range(cantidad):
@@ -147,18 +168,15 @@ def iniciar_juego():
         while pygame.sprite.spritecollide(nuevo_auto, trafico_group, False):
             nuevo_auto.rect.y = random.randint(-600, -200)
         trafico_group.add(nuevo_auto)
-        sonido_paso.play()  # Sonido al crear cada auto inicial
+        sonido_paso.play()
 
     while corriendo:
         ventana.blit(niveles[nivel_actual], (0, 0))
         texto = font.render(puntos, True, (0, 0, 0)) 
-        rect = texto.get_rect(topleft=(500, 0)) 
-        ventana.blit(texto, rect)        
+        ventana.blit(texto, (500, 0))        
         texto3 = font.render(str(autos_rebasados), True, (0, 0, 0)) 
-        rect3 = texto3.get_rect(topleft=(650, 0))     
-        ventana.blit(texto3, rect3)
+        ventana.blit(texto3, (650, 0))
 
-        # Botones del juego
         boton_menu = dibujar_boton2("Menu", 0, 0, ROJO)
         boton_salir = dibujar_boton2("Salir", 0, 50, ROJO) 
 
@@ -174,30 +192,30 @@ def iniciar_juego():
                     pygame.quit()
                     sys.exit()
 
-        # Movimiento jugador
         keys = pygame.key.get_pressed()
         jugador.mover(keys)
 
-        # Actualizar tráfico
         for auto in trafico_group:
             auto.rect.y += auto.velocidad
             if auto.rect.top > ALTO:
                 auto.kill()
                 autos_rebasados += 1
-                sonido_paso.play()  # Sonido cuando auto desaparece y reaparece
+                sonido_paso.play()
                 nuevo_auto = Trafico()
                 while pygame.sprite.spritecollide(nuevo_auto, trafico_group, False):
                     nuevo_auto.rect.y = random.randint(-1000, -200)
-                trafico_group.add(nuevo_auto)      
+                trafico_group.add(nuevo_auto)
 
-        if autos_rebasados == 5 and nivel_actual == 0:
+        # Transición de niveles y victoria
+        if autos_rebasados == 20 and nivel_actual == 0:
             sonido_paso.stop()  
             pantalla_nivel(2)    
             velocidad_trafico = 12 
             nivel_actual = 1
             autos_rebasados = 0
             jugador.reiniciar()
-        if autos_rebasados == 5 and nivel_actual == 1:
+
+        elif autos_rebasados == 20 and nivel_actual == 1:
             sonido_paso.stop()
             pantalla_nivel(3)
             velocidad_trafico = 16
@@ -205,13 +223,16 @@ def iniciar_juego():
             autos_rebasados = 0
             jugador.reiniciar()
 
-        # Dibujar tráfico y jugador
+        elif autos_rebasados == 20 and nivel_actual == 2:
+            sonido_paso.stop()
+            pantalla_victoria()
+            return "menu"
+
         trafico_group.draw(ventana)
         ventana.blit(jugador.image, jugador.rect)
 
-        # Colisiones
         if pygame.sprite.spritecollide(jugador, trafico_group, False):
-            return "menu"    
+            return "menu"
 
         pygame.display.flip()
         reloj.tick(60)
@@ -228,6 +249,7 @@ def main():
                 jugador.reiniciar()
 
 main()
+
 
 
 
