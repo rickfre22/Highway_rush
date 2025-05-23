@@ -106,9 +106,7 @@ def inicio_juego():
         ventana.fill(NEGRO)
         boton_jugar = dibujar_boton("Iniciar", 30, 200, ROJO)
         boton_salir = dibujar_boton("Salir", 30, 300, VERDE) 
-        texto = font.render("integrantes:", True, (255, 255, 255)) 
-        rect3 = texto.get_rect(topleft=(255, 255))
-        ventana.blit(texto, rect3)
+        
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
@@ -131,11 +129,11 @@ def pantalla_nivel(nivel_numero):
 
 def pantalla_victoria():
     ventana.fill(NEGRO)
-    texto = font.render("¡Ganaste!", True, (0, 255, 0))
+    texto = font.render("Ganaste", True, (0, 255, 0))
     rect = texto.get_rect(center=(ANCHO // 2, ALTO // 2 - 50))
     ventana.blit(texto, rect)
 
-    texto2 = font.render("Haz clic para volver al menú", True, (255, 255, 255))
+    texto2 = font.render("preciona el click para volver al menú", True, (255, 255, 255))
     rect2 = texto2.get_rect(center=(ANCHO // 2, ALTO // 2 + 20))
     ventana.blit(texto2, rect2)
     pygame.display.flip()
