@@ -4,7 +4,6 @@ import time
 import random
 import os
 
-
 # Colores y constantes
 ROJO = (255, 0, 0) 
 VERDE = (0, 255, 0)
@@ -18,7 +17,7 @@ autos_rebasados = 0
 carril1 = 230
 carril2 = 360
 carril3 = 485
-velocidad_trafico = 8  # Inicial
+velocidad_trafico = 8
 
 # Ruta base del proyecto
 base_path = "/home/sistemas/miguel galvis/x/Highway_rush"
@@ -33,15 +32,16 @@ font = pygame.font.SysFont(None, 60)
 font2 = pygame.font.SysFont(None, 25)
 
 # Imágenes
-carro1 = pygame.image.load(os.path.join(base_path, "img", "carro1.png")).convert()
-carrito = pygame.image.load(os.path.join(base_path, "img", "carrito.png")).convert()
+carro1 = pygame.image.load(os.path.join(base_path, "img", "carro1.png")).convert_alpha()
+carrito = pygame.image.load(os.path.join(base_path, "img", "carrito.png")).convert_alpha()
 carretera = pygame.image.load(os.path.join(base_path, "img", "carretera.png")).convert()
 carretera2 = pygame.image.load(os.path.join(base_path, "img", "carretera2.png")).convert()
 carretera3 = pygame.image.load(os.path.join(base_path, "img", "carretera3.png")).convert()
-carros2 = pygame.image.load(os.path.join(base_path, "img", "carro2.1.png")).convert()
-carros3 = pygame.image.load(os.path.join(base_path, "img", "carro3.1.png")).convert()
-fondomenu = pygame.image.load(os.path.join(base_path,"img","fondomenu.png"))
+carros2 = pygame.image.load(os.path.join(base_path, "img", "carro2.1.png")).convert_alpha()
+carros3 = pygame.image.load(os.path.join(base_path, "img", "carro3.1.png")).convert_alpha()
+fondomenu = pygame.image.load(os.path.join(base_path,"img","fondomenu.png")).convert()
 sonido_paso = pygame.mixer.Sound(os.path.join(base_path, "img", "carross.mp3"))
+boton = pygame.image.load(os.path.join(base_path,"img","boton.png")).convert_alpha()
 niveles = [carretera, carretera2, carretera3]
 nivel_actual = 0
 
@@ -80,20 +80,35 @@ class Trafico(pygame.sprite.Sprite):
             self.rect.y = random.randint(-200, -100)
             self.velocidad = velocidad_trafico
 
-# Botones
-def dibujar_boton(texto, x, y, color):
-    rect = pygame.Rect(x, y, 200, 60)
-    pygame.draw.rect(ventana, color, rect)
-    texto_render = font.render(texto, True, NEGRO)
-    ventana.blit(texto_render, (x + 50, y + 15))
+# NUEVA función para dibujar botones con imagen
+def dibujar_boton_imagen(x, y, texto):
+    rect = boton.get_rect(topleft=(x, y))
+    ventana.blit(boton, (x, y))
+    texto_render = font2.render(texto, True, NEGRO)
+    texto_rect = texto_render.get_rect(center=rect.center)
+    ventana.blit(texto_render, texto_rect)
     return rect
+#pantalla de derrota
+def pantalla_derrota():
+    ventana.fill(NEGRO)
+    texto = font.render("¡Perdiste!", True, (255, 0, 0))
+    rect = texto.get_rect(center=(ANCHO // 2, ALTO // 2 - 50))
+    ventana.blit(texto, rect)
 
-def dibujar_boton2(texto, x, y, color):
-    rect2 = pygame.Rect(x, y, 100, 30)
-    pygame.draw.rect(ventana, color, rect2)
-    texto_render2 = font2.render(texto, True, NEGRO)
-    ventana.blit(texto_render2, (x + 2, y + 2))
-    return rect2
+    texto2 = font2.render("Haz clic para volver al menú", True, (255, 255, 255))
+    rect2 = texto2.get_rect(center=(ANCHO // 2, ALTO // 2 + 20))
+    ventana.blit(texto2, rect2)
+
+    pygame.display.flip()
+
+    esperando = True
+    while esperando:
+        for evento in pygame.event.get():
+            if evento.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+            if evento.type == pygame.MOUSEBUTTONDOWN:
+                esperando = False
 
 # Pantallas
 def pantallas_carga_inicial():
@@ -109,8 +124,8 @@ def pantallas_carga_inicial():
 def inicio_juego():
     while True:
         ventana.blit(fondomenu,(0,0))
-        boton_jugar = dibujar_boton("Iniciar", 30, 200, ROJO)
-        boton_salir = dibujar_boton("Salir", 30, 300, VERDE) 
+        boton_jugar = dibujar_boton_imagen(50, 200, "Iniciar")
+        boton_salir = dibujar_boton_imagen(50, 300, "Salir") 
         
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -126,11 +141,20 @@ def inicio_juego():
 
 def pantalla_nivel(nivel_numero):
     ventana.fill(NEGRO)
-    texto = font.render(f"Nivel {nivel_numero}", True, (255, 255, 255))
-    rect = texto.get_rect(center=(ANCHO // 2, ALTO // 2))
+
+    # Texto principal: número de nivel
+    texto = font.render(f"¡Nivel {nivel_numero}!", True, (255, 0, 0))
+    rect = texto.get_rect(center=(ANCHO // 2, ALTO // 2 - 40))
     ventana.blit(texto, rect)
+
+    # Texto secundario: mensaje de velocidad
+    texto2 = font2.render("¡Aumenta la velocidad!", True, (255, 255, 255))
+    rect2 = texto2.get_rect(center=(ANCHO // 2, ALTO // 2 + 20))
+    ventana.blit(texto2, rect2)
+
     pygame.display.flip()
     time.sleep(2)
+
 
 def pantalla_victoria():
     ventana.fill(NEGRO)
@@ -138,7 +162,7 @@ def pantalla_victoria():
     rect = texto.get_rect(center=(ANCHO // 2, ALTO // 2 - 50))
     ventana.blit(texto, rect)
 
-    texto2 = font.render("preciona el click para volver al menú", True, (255, 255, 255))
+    texto2 = font.render("Presiona el click para volver al menú", True, (255, 255, 255))
     rect2 = texto2.get_rect(center=(ANCHO // 2, ALTO // 2 + 20))
     ventana.blit(texto2, rect2)
     pygame.display.flip()
@@ -180,8 +204,8 @@ def iniciar_juego():
         texto3 = font.render(str(autos_rebasados), True, (0, 0, 0)) 
         ventana.blit(texto3, (650, 0))
 
-        boton_menu = dibujar_boton2("Menu", 0, 0, ROJO)
-        boton_salir = dibujar_boton2("Salir", 0, 50, ROJO) 
+        boton_menu = dibujar_boton_imagen(0, 0, "Menu")
+        boton_salir = dibujar_boton_imagen(0, 100, "Salir")
 
         for evento in pygame.event.get():
             if evento.type == pygame.QUIT:
@@ -209,7 +233,6 @@ def iniciar_juego():
                     nuevo_auto.rect.y = random.randint(-1000, -200)
                 trafico_group.add(nuevo_auto)
 
-        # Transición de niveles y victoria
         if autos_rebasados == 20 and nivel_actual == 0:
             sonido_paso.stop()  
             pantalla_nivel(2)    
@@ -234,7 +257,10 @@ def iniciar_juego():
         ventana.blit(jugador.image, jugador.rect)
 
         if pygame.sprite.spritecollide(jugador, trafico_group, False):
+            sonido_paso.stop()
+            pantalla_derrota()
             return "menu"
+
 
         pygame.display.flip()
         reloj.tick(60)
