@@ -21,7 +21,7 @@ velocidad_trafico = 8
 
 # Ruta base del proyecto
 base_path = "/home/sistemas/miguel galvis/x/Highway_rush"
-
+# poner la ruta base del proyecto el el nuevo pc,no olvidar
 pygame.init()
 pygame.mixer.init()
 
@@ -41,7 +41,9 @@ carros2 = pygame.image.load(os.path.join(base_path, "img", "carro2.1.png")).conv
 carros3 = pygame.image.load(os.path.join(base_path, "img", "carro3.1.png")).convert_alpha()
 fondomenu = pygame.image.load(os.path.join(base_path,"img","fondomenu.png")).convert()
 sonido_paso = pygame.mixer.Sound(os.path.join(base_path, "img", "carross.mp3"))
+musica = pygame.mixer.Sound(os.path.join(base_path,"img","musica.mp3"))
 boton = pygame.image.load(os.path.join(base_path,"img","boton.png")).convert_alpha()
+
 niveles = [carretera, carretera2, carretera3]
 nivel_actual = 0
 
@@ -126,7 +128,7 @@ def inicio_juego():
         ventana.blit(fondomenu,(0,0))
         boton_jugar = dibujar_boton_imagen(50, 200, "Iniciar")
         boton_salir = dibujar_boton_imagen(50, 300, "Salir") 
-        
+        musica.play()
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
@@ -196,7 +198,7 @@ def iniciar_juego():
             nuevo_auto.rect.y = random.randint(-600, -200)
         trafico_group.add(nuevo_auto)
         sonido_paso.play()
-
+        
     while corriendo:
         ventana.blit(niveles[nivel_actual], (0, 0))
         texto = font.render(puntos, True, (0, 0, 0)) 
