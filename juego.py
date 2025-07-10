@@ -2,6 +2,8 @@ import pygame
 import sys
 import time
 import random
+import os
+
 
 # Colores y constantes
 ROJO = (255, 0, 0) 
@@ -18,6 +20,9 @@ carril2 = 360
 carril3 = 485
 velocidad_trafico = 8  # Inicial
 
+# Ruta base del proyecto
+base_path = "/home/sistemas/miguel galvis/x/Highway_rush"
+
 pygame.init()
 pygame.mixer.init()
 
@@ -28,15 +33,15 @@ font = pygame.font.SysFont(None, 60)
 font2 = pygame.font.SysFont(None, 25)
 
 # Imágenes
-carro1 = pygame.image.load("img/carro1.1.png").convert_alpha()
-carrito = pygame.image.load("img/carrito.png").convert()
-carretera = pygame.image.load("img/carretera.png").convert()
-carretera2 = pygame.image.load("img/carretera2.png").convert()
-carretera3 = pygame.image.load("img/carretera3.png").convert()
-carros2 = pygame.image.load("img/carro2.1.png").convert_alpha()
-carros3 = pygame.image.load("img/carro3.1.png").convert_alpha()
-
-sonido_paso = pygame.mixer.Sound("img/carross.mp3")
+carro1 = pygame.image.load(os.path.join(base_path, "img", "carro1.png")).convert()
+carrito = pygame.image.load(os.path.join(base_path, "img", "carrito.png")).convert()
+carretera = pygame.image.load(os.path.join(base_path, "img", "carretera.png")).convert()
+carretera2 = pygame.image.load(os.path.join(base_path, "img", "carretera2.png")).convert()
+carretera3 = pygame.image.load(os.path.join(base_path, "img", "carretera3.png")).convert()
+carros2 = pygame.image.load(os.path.join(base_path, "img", "carro2.1.png")).convert()
+carros3 = pygame.image.load(os.path.join(base_path, "img", "carro3.1.png")).convert()
+fondomenu = pygame.image.load(os.path.join(base_path,"img","fondomenu.png"))
+sonido_paso = pygame.mixer.Sound(os.path.join(base_path, "img", "carross.mp3"))
 niveles = [carretera, carretera2, carretera3]
 nivel_actual = 0
 
@@ -103,7 +108,7 @@ def pantallas_carga_inicial():
 
 def inicio_juego():
     while True:
-        ventana.fill(NEGRO)
+        ventana.blit(fondomenu,(0,0))
         boton_jugar = dibujar_boton("Iniciar", 30, 200, ROJO)
         boton_salir = dibujar_boton("Salir", 30, 300, VERDE) 
         
@@ -212,7 +217,6 @@ def iniciar_juego():
             nivel_actual = 1
             autos_rebasados = 0
             jugador.reiniciar()
-
         elif autos_rebasados == 20 and nivel_actual == 1:
             sonido_paso.stop()
             pantalla_nivel(3)
