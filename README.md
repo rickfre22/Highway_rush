@@ -56,6 +56,7 @@ Introducir obstáculos fijos o en movimiento.
 
 Implementar vida extra o power-ups.
 
-Agregar carros con comportamientos diferentes (mueven en zigzag, más grandes, etc.).
-
 Incluir pantalla de pausa o controles configurables
+### fotos del juego
+![holaa](img/fonndojpg.jpg) 
+![holaa](img/)
