@@ -33,7 +33,7 @@ ANCHO = 800
 ALTO = 600
 LIMITE_IZQUIERDO = 235
 LIMITE_DERECHO = 550
-puntos  = "!Puntos¡:"
+puntos  = "Puntos:"
 autos_rebasados = 0
 carril1 = 230
 carril2 = 360
@@ -183,9 +183,9 @@ def juego():
     while corriendo:
         ventana.blit(niveles[nivel_actual], (0, 0))
         texto = font.render(puntos, True, (0, 0, 0)) 
-        ventana.blit(texto, (500, 0))        
+        ventana.blit(texto, (0, 400))        
         texto3 = font.render(str(autos_rebasados), True, (0, 0, 0)) 
-        ventana.blit(texto3, (650, 0))
+        ventana.blit(texto3, (100,430))
         boton_menu = dibujar_boton_imagen(0, 0, "Menu")
         boton_salir = dibujar_boton_imagen(0, 100, "Salir")
         for evento in pygame.event.get():
@@ -211,7 +211,7 @@ def juego():
                 while pygame.sprite.spritecollide(nuevo_auto, trafico_group, False):
                     nuevo_auto.rect.y = random.randint(-1000, -200)
                 trafico_group.add(nuevo_auto)
-        if autos_rebasados == 7 and nivel_actual == 0:
+        if autos_rebasados == 30 and nivel_actual == 0:
             sonido_paso.stop() 
             auto.kill() 
             pantalla_nivel(2)    
