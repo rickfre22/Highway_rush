@@ -57,6 +57,16 @@ Introducir obstáculos fijos o en movimiento.
 Implementar vida extra o power-ups.
 
 Incluir pantalla de pausa o controles configurables
-### fotos del juego
+## fotos del juego
+### menu
 ![holaa](img/fonndojpg.jpg) 
-![holaa](img/)
+### mapa nivel uno
+![holaa](img/carretera.png)
+### mapa nivel dos
+![holaa](img/carretera2.png)
+### mapa nivel tres
+![holaa](img/carretera3.png)
+### trafico
+![h](img/carro1.png)![holaa](img/carro2.1.png)![holaa](img/carro3.1.png)
+### jugador
+![holaaa](img/carrito.png)

@@ -107,7 +107,7 @@ def pantallas_carga_inicial():
     mensajes = ["Cargando...", "Iniciando juego..."]
     for mensaje in mensajes:
         ventana.fill(NEGRO)
-        texto = font.render(mensaje, True, (100, 255, 255))
+        texto = font.render(mensaje, True, (255 ,0, 0))
         rect = texto.get_rect(center=(ANCHO // 2, ALTO // 2))
         ventana.blit(texto, rect)
         pygame.display.flip()
